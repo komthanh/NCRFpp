@@ -394,7 +394,7 @@ def train(data):
 
 
 def load_model_decode(data, name):
-    print("Load Model from file: ", data.model_dir)
+    print("Load Model from file: ", data.load_model_dir)
     model = SeqModel(data)
     ## load model need consider if the model trained in GPU and load in CPU, or vice versa
     # if not gpu:
@@ -444,8 +444,8 @@ if __name__ == '__main__':
         data.read_config(args.config)
         print(data.raw_dir)
         # exit(0)
-        data.show_data_summary()
         data.generate_instance('raw')
+        data.show_data_summary()
         print("nbest: %s" % (data.nbest))
         decode_results, pred_scores = load_model_decode(data, 'raw')
         if data.nbest:
