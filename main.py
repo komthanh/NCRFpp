@@ -418,6 +418,33 @@ def load_model_decode(data, name):
     return pred_results, pred_scores
 
 
+def decodeAPI(config_file):
+    """
+    Author: Thanh Thieu
+    Decode tag sequences. Configuration comes from a file.
+    :return:
+    """
+    print('NCRFpp: Send sequence decoding to API')
+    data = Data()
+    data.HP_gpu = torch.cuda.is_available()
+    data.read_config(config_file)
+    status = data.status.lower()
+    print("Seed num:", seed_num)
+
+    data.load(data.dset_dir)
+    data.read_config(config_file)
+    print(data.raw_dir)
+    data.generate_instance('raw')
+    print("nbest: %s" % (data.nbest))
+    decode_results, pred_scores = load_model_decode(data, 'raw')
+    if data.nbest:
+        data.write_nbest_decoded_results(decode_results, pred_scores, 'raw')
+    else:
+        data.write_decoded_results(decode_results, 'raw')
+
+    return decode_results, pred_scores
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Tuning with NCRF++')
     # parser.add_argument('--status', choices=['train', 'decode'], help='update algorithm', default='train')
