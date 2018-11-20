@@ -18,6 +18,7 @@ import numpy as np
 from utils.metric import get_ner_fmeasure
 from model.seqmodel import SeqModel
 from utils.data import Data
+import os
 
 try:
     import cPickle as pickle
@@ -276,7 +277,7 @@ def batchify_with_label(input_batch_list, gpu, volatile_flag=False):
 def train(data):
     print("Training model...")
     data.show_data_summary()
-    save_data_name = data.model_dir + ".dset"
+    save_data_name = os.path.join(data.model_dir, "data.dset")
     data.save(save_data_name)
     model = SeqModel(data)
     loss_function = nn.NLLLoss()
@@ -378,8 +379,9 @@ def train(data):
                 print("Exceed previous best f score:", best_dev)
             else:
                 print("Exceed previous best acc score:", best_dev)
-            model_name = data.model_dir + '.' + str(idx) + ".model"
-            print("Save current best model in file:", model_name)
+            # model_name = os.path.join(data.model_dir, 'epoch' + str(idx) + ".model")
+            model_name = os.path.join(data.model_dir, "best.model")
+            print("EPOCH {}: Save current best model in file: {}".format(idx, model_name))
             torch.save(model.state_dict(), model_name)
             best_dev = current_score
         # ## decode test
