@@ -420,21 +420,42 @@ def load_model_decode(data, name):
     return pred_results, pred_scores
 
 
-def decodeAPI(config_file):
+def _substituteDatasetName(data, dataset_name):
+    """
+    Author: Thanh Thieu
+    Substitute real the dataset name into the pseudo-name.
+
+    :param data: The config data object.
+    :param dataset_name: The real dataset name.
+    :return:
+    """
+    pseudo_name = 'rundata'  # this is set by the parameter files on DGX-1
+    data.raw_dir = data.raw_dir.replace(pseudo_name, dataset_name)
+    data.decode_dir = data.decode_dir.replace(pseudo_name, dataset_name)
+    data.dset_dir = data.dset_dir.replace(pseudo_name, dataset_name)
+    data.load_model_dir = data.load_model_dir.replace(pseudo_name, dataset_name)
+
+
+def decodeAPI(config_file, dataset_name):
     """
     Author: Thanh Thieu
     Decode tag sequences. Configuration comes from a file.
+
+    :param config_file: Path to a decode config file.
+    :param dataset_name: Name of the dataset to be replaced in directory paths.
     :return:
     """
-    print('NCRFpp: Send sequence decoding to API')
+    print('NCRFpp: Sequence decoding for "{}" dataset'.format(dataset_name))
     data = Data()
     data.HP_gpu = torch.cuda.is_available()
     data.read_config(config_file)
+    _substituteDatasetName(data, dataset_name)
     status = data.status.lower()
     print("Seed num:", seed_num)
 
     data.load(data.dset_dir)
     data.read_config(config_file)
+    _substituteDatasetName(data, dataset_name)
     print(data.raw_dir)
     data.generate_instance('raw')
     print("nbest: %s" % (data.nbest))
