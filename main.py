@@ -381,7 +381,7 @@ def train(data):
                 print("Exceed previous best acc score:", best_dev)
             # model_name = os.path.join(data.model_dir, 'epoch' + str(idx) + ".model")
             model_name = os.path.join(data.model_dir, "best.model")
-            print("EPOCH {}: Save current best model in file: {}".format(idx, model_name))
+            print("EPOCH {}: Save current best model in file: {}".format(idx + 1, model_name))
             torch.save(model.state_dict(), model_name)
             best_dev = current_score
         # ## decode test
