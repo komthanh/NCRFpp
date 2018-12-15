@@ -63,9 +63,10 @@ def get_ner_fmeasure(golden_lists, predict_lists, label_type="BMES"):
     else:
         f_measure = 2 * precision * recall / (precision + recall)
 
-    tag_precision = float(TP_tag) / (TP_tag + FP_tag)
-    tag_recall = float(TP_tag) / all_gold_tag
-    accuracy = 2 * tag_precision * tag_recall / (tag_precision + tag_recall)  # now actually F1-score at tag level
+    tag_precision = 0 if TP_tag == 0 else float(TP_tag) / (TP_tag + FP_tag)
+    tag_recall = 0 if TP_tag == 0 else float(TP_tag) / all_gold_tag
+    # now accuracy becomes F1-score at tag level
+    accuracy = 0 if tag_precision * tag_recall == 0 else 2 * tag_precision * tag_recall / (tag_precision + tag_recall)
 
     # print "Accuracy: ", right_tag,"/",all_tag,"=",accuracy
     print("gold_num = ", golden_num, " pred_num = ", predict_num, " right_num = ", right_num)
