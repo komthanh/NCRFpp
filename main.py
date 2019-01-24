@@ -408,6 +408,9 @@ def load_model_decode(data, name):
     #     # model = torch.load(model_dir)
     model.load_state_dict(torch.load(data.load_model_dir))
 
+    # revert GPU usage back to current system's setting
+    # model.gpu = data.HP_gpu
+
     print("Decode %s data, nbest: %s ..." % (name, data.nbest))
     start_time = time.time()
     speed, acc, p, r, f, pred_results, pred_scores = evaluate(data, model, name, data.nbest)
